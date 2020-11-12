@@ -137,7 +137,6 @@ public class IntJoukko {
             }
         }
         return x;
-
     }
     
     public static IntJoukko erotus ( IntJoukko a, IntJoukko b) {
