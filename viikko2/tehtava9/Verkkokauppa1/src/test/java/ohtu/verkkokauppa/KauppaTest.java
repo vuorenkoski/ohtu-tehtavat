@@ -115,6 +115,64 @@ public class KauppaTest {
 
         verify(pankki).tilisiirto("pekka", 42, "12345", "33333-44455",5);   
     } 
+    
+    @Test
+    public void asioinninAloittaminenNollaaEdellisenOstoksenTiedot() {
+        when(viite.uusi()).thenReturn(42);
+
+        when(varasto.saldo(1)).thenReturn(10); 
+        when(varasto.haeTuote(1)).thenReturn(new Tuote(1, "maito", 5));
+        when(varasto.saldo(2)).thenReturn(0); 
+        when(varasto.haeTuote(2)).thenReturn(new Tuote(2, "juusto", 9));
+
+        Kauppa k = new Kauppa(varasto, pankki, viite);              
+
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);     
+        k.lisaaKoriin(2); 
+        k.aloitaAsiointi();
+        k.tilimaksu("pekka", "12345");
+
+        verify(pankki).tilisiirto("pekka", 42, "12345", "33333-44455",0);   
+    } 
+    
+    @Test
+    public void uusiViitenumeroJokaiselleMaksutapahtumalle() {
+        when(viite.uusi()).thenReturn(42);
+
+        when(varasto.saldo(1)).thenReturn(10); 
+        when(varasto.haeTuote(1)).thenReturn(new Tuote(1, "maito", 5));
+        when(varasto.saldo(2)).thenReturn(0); 
+        when(varasto.haeTuote(2)).thenReturn(new Tuote(2, "juusto", 9));
+
+        Kauppa k = new Kauppa(varasto, pankki, viite);              
+
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);     
+        k.tilimaksu("pekka", "12345");
+        k.aloitaAsiointi();
+        k.lisaaKoriin(2); 
+        k.tilimaksu("pekka", "12345");
+
+        verify(viite, times(2)).uusi();   
+    } 
+    
+    @Test
+    public void lisaaTuoteJaPoistaTuote() {
+        when(viite.uusi()).thenReturn(42);
+
+        when(varasto.saldo(1)).thenReturn(10); 
+        when(varasto.haeTuote(1)).thenReturn(new Tuote(1, "maito", 5));
+
+        Kauppa k = new Kauppa(varasto, pankki, viite);              
+
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);     
+        k.poistaKorista(1); 
+        k.tilimaksu("pekka", "12345");
+
+        verify(pankki).tilisiirto("pekka", 42, "12345", "33333-44455",0);   
+    } 
 }
 
 
