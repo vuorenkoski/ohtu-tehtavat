@@ -16,14 +16,10 @@ public class Summa extends Komento {
             sovellus.plus(arvo);
             int laskunTulos = sovellus.tulos();
             syotekentta.setText("");
+            this.edellinenArvo=tuloskentta.getText();
             tuloskentta.setText("" + laskunTulos);
         } catch (Exception e) {
         }
     }
-
-    @Override
-    public void peru() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+   
 }
